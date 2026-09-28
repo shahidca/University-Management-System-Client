@@ -6,6 +6,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   clearAuthTokens,
@@ -13,12 +15,14 @@ import {
   getRefreshToken,
   setAuthTokens,
 } from "./auth-storage";
+
 import {
   getCurrentUser,
   login as loginRequest,
   logout as logoutRequest,
   refreshToken as refreshTokenRequest,
 } from "./auth.service";
+
 import type {
   AuthUser,
   LoginInput,
@@ -46,6 +50,9 @@ export function AuthProvider({
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const loadCurrentUser = async () => {
     const accessToken = getAccessToken();
 
@@ -59,6 +66,7 @@ export function AuthProvider({
 
       setUser(currentUser);
     } catch {
+      clearAuthTokens();
       setUser(null);
     }
   };
@@ -95,13 +103,17 @@ export function AuthProvider({
     if (!refreshToken) {
       clearAuthTokens();
       setUser(null);
+
+      queryClient.setQueryData(["me"], null);
+
       return;
     }
 
     try {
-      const response = await refreshTokenRequest({
-        refreshToken,
-      });
+      const response =
+        await refreshTokenRequest({
+          refreshToken,
+        });
 
       setAuthTokens(
         response.accessToken,
@@ -114,6 +126,8 @@ export function AuthProvider({
     } catch {
       clearAuthTokens();
       setUser(null);
+
+      queryClient.setQueryData(["me"], null);
     }
   };
 
@@ -127,6 +141,14 @@ export function AuthProvider({
     } finally {
       clearAuthTokens();
       setUser(null);
+
+      queryClient.setQueryData(["me"], null);
+
+      queryClient.removeQueries({
+        queryKey: ["me"],
+      });
+
+      router.replace("/login");
     }
   };
 

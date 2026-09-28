@@ -1,6 +1,12 @@
-export type UserRole = "STUDENT" | "INSTRUCTOR" | "ADMIN";
+export type UserRole =
+  | "STUDENT"
+  | "INSTRUCTOR"
+  | "ADMIN";
 
-export type UserStatus = "ACTIVE" | "SUSPENDED" | "INACTIVE";
+export type UserStatus =
+  | "ACTIVE"
+  | "SUSPENDED"
+  | "INACTIVE";
 
 export interface AuthUser {
   id: string;
