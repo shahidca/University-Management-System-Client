@@ -1,10 +1,23 @@
 import { apiRequest } from "@/services";
 
-import type { StudentTranscript } from "./transcript.types";
+import type {
+  StudentTranscript,
+} from "./transcript.types";
 
-export function getMyIssuedTranscripts(): Promise<StudentTranscript[]> {
+export function getMyIssuedTranscripts(): Promise<
+  StudentTranscript[]
+> {
   return apiRequest<StudentTranscript[]>({
     method: "GET",
-    url: "/transcripts/my-issued",
+    url: "/transcripts/my/issued",
+  });
+}
+
+export function getTranscriptById(
+  id: string,
+): Promise<StudentTranscript> {
+  return apiRequest<StudentTranscript>({
+    method: "GET",
+    url: `/transcripts/${id}`,
   });
 }
