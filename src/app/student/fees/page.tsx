@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useMyInvoices } from "@/features/fee/fee.hooks";
+import { useMyInvoices } from "@/features/invoice/invoice.hooks";
 
 function formatAmount(value: number | string) {
   const amount = Number(value);
