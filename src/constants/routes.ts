@@ -6,11 +6,13 @@ export const ROUTES = {
     REGISTER: "/register",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password",
+    VERIFY_EMAIL: "/verify-email",
   },
 
   STUDENT: {
     DASHBOARD: "/student",
     COURSES: "/student/courses",
+    REGISTER_COURSES: "/student/courses/register",
     ATTENDANCE: "/student/attendance",
     EXAMS: "/student/exams",
     RESULTS: "/student/results",

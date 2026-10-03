@@ -12,7 +12,6 @@ import {
   FileText,
   GraduationCap,
   LayoutDashboard,
-  Receipt,
   School,
   Settings,
   Users,
