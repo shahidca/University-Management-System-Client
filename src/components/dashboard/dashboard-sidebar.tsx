@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Bell,
   BookOpen,
   CalendarCheck,
   ClipboardList,
@@ -77,6 +78,7 @@ const navigationByRole: Record<
         },
       ],
     },
+
     {
       title: "Academic",
       items: [
@@ -87,6 +89,7 @@ const navigationByRole: Record<
         },
       ],
     },
+
     {
       title: "Finance",
       items: [
@@ -99,6 +102,17 @@ const navigationByRole: Record<
           label: "Payments",
           href: ROUTES.STUDENT.PAYMENTS,
           icon: CreditCard,
+        },
+      ],
+    },
+
+    {
+      title: "System",
+      items: [
+        {
+          label: "Notifications",
+          href: ROUTES.STUDENT.NOTIFICATIONS,
+          icon: Bell,
         },
       ],
     },
@@ -163,6 +177,7 @@ const navigationByRole: Record<
         },
       ],
     },
+
     {
       title: "Academic",
       items: [
@@ -198,6 +213,7 @@ const navigationByRole: Record<
         },
       ],
     },
+
     {
       title: "Finance & System",
       items: [
@@ -214,7 +230,7 @@ const navigationByRole: Record<
         {
           label: "Notifications",
           href: ROUTES.ADMIN.NOTIFICATIONS,
-          icon: Receipt,
+          icon: Bell,
         },
         {
           label: "Audit Logs",
