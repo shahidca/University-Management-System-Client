@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
+  ArrowRight,
   Award,
   BookOpen,
   GraduationCap,
@@ -17,10 +18,19 @@ import type {
   ResultExamType,
 } from "@/features/result/result.types";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const examTypeLabels: Record<ResultExamType, string> = {
@@ -287,7 +297,7 @@ function CourseResultCard({
               key={result.id}
               className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="outline">
                     {formatExamType(result.exam.examType)}
@@ -309,35 +319,48 @@ function CourseResultCard({
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-5 text-right">
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    Marks
-                  </p>
-                  <p className="mt-1 font-semibold">
-                    {formatNumber(result.marksObtained)}
-                    {" / "}
-                    {formatNumber(result.exam.totalMarks)}
-                  </p>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="grid grid-cols-3 gap-5 text-right">
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      Marks
+                    </p>
+
+                    <p className="mt-1 font-semibold">
+                      {formatNumber(result.marksObtained)}
+                      {" / "}
+                      {formatNumber(result.exam.totalMarks)}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      Grade
+                    </p>
+
+                    <p className="mt-1 font-semibold">
+                      {result.grade ?? "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      GP
+                    </p>
+
+                    <p className="mt-1 font-semibold">
+                      {formatNumber(result.gradePoint)}
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    Grade
-                  </p>
-                  <p className="mt-1 font-semibold">
-                    {result.grade ?? "—"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    GP
-                  </p>
-                  <p className="mt-1 font-semibold">
-                    {formatNumber(result.gradePoint)}
-                  </p>
-                </div>
+                <Link
+                  href={`/student/results/${result.id}`}
+                  className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md border bg-background px-4 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  View Details
+                  <ArrowRight className="size-4" />
+                </Link>
               </div>
             </div>
           ))}
