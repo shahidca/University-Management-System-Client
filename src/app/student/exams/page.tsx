@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
       ArrowLeft,
+      ArrowRight,
       CalendarDays,
       CheckCircle2,
       Clock3,
@@ -248,21 +249,31 @@ function ExamCard({ exam }: { exam: Exam }) {
                               </div>
                         )}
 
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1.5">
-                                    <MapPin className="size-3.5" />
-                                    Section {exam.section.sectionCode}
-                              </span>
+                        <div className="flex flex-col gap-4 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+                              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                                    <span className="flex items-center gap-1.5">
+                                          <MapPin className="size-3.5" />
+                                          Section {exam.section.sectionCode}
+                                    </span>
 
-                              <span>
-                                    Course offering:{" "}
-                                    {exam.section.courseOffering.code}
-                              </span>
+                                    <span>
+                                          Course offering:{" "}
+                                          {exam.section.courseOffering.code}
+                                    </span>
 
-                              <span>
-                                    Credits:{" "}
-                                    {exam.section.courseOffering.credits}
-                              </span>
+                                    <span>
+                                          Credits:{" "}
+                                          {exam.section.courseOffering.credits}
+                                    </span>
+                              </div>
+
+                              <Link
+                                    href={`/student/exams/${exam.id}`}
+                                    className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md border bg-background px-4 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                    View Details
+                                    <ArrowRight className="size-4" />
+                              </Link>
                         </div>
                   </CardContent>
             </Card>
