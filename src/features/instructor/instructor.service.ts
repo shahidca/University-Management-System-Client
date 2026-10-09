@@ -1,6 +1,7 @@
 import { apiRequest } from "@/services";
 
 import type {
+  CreateInstructorExamInput,
   InstructorExam,
   InstructorProfile,
   InstructorSection,
@@ -41,5 +42,15 @@ export function getExamById(
   return apiRequest<InstructorExam>({
     method: "GET",
     url: `/exams/${examId}`,
+  });
+}
+
+export function createExam(
+  input: CreateInstructorExamInput,
+): Promise<InstructorExam> {
+  return apiRequest<InstructorExam>({
+    method: "POST",
+    url: "/exams",
+    data: input,
   });
 }

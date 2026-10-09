@@ -1,6 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import {
+  createExam,
   getExamById,
   getMyExams,
   getMyInstructorProfile,
@@ -73,5 +78,18 @@ export function useInstructorExam(
     enabled: Boolean(examId),
     staleTime: 60 * 1000,
     retry: 1,
+  });
+}
+
+export function useCreateInstructorExam() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createExam,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: instructorQueryKeys.exams(),
+      });
+    },
   });
 }

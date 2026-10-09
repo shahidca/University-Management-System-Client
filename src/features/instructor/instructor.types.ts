@@ -175,3 +175,22 @@ export interface InstructorExam {
     results?: number;
   };
 }
+
+export interface CreateInstructorExamInput {
+  sectionId: string;
+  title: string;
+  description?: string;
+  examType:
+    | "QUIZ"
+    | "ASSIGNMENT"
+    | "MIDTERM"
+    | "FINAL"
+    | "VIVA"
+    | "PROJECT"
+    | "PRESENTATION";
+  totalMarks: number;
+  examDate: string;
+  startTime?: string;
+  endTime?: string;
+  room?: string;
+}
