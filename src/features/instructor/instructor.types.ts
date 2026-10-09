@@ -115,3 +115,63 @@ export interface InstructorStudent {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface InstructorExam {
+  id: string;
+  sectionId: string;
+  title: string;
+  description: string | null;
+  examType:
+    | "QUIZ"
+    | "ASSIGNMENT"
+    | "MIDTERM"
+    | "FINAL"
+    | "VIVA"
+    | "PROJECT"
+    | "PRESENTATION";
+  totalMarks: number | string;
+  examDate: string;
+  startTime: string | null;
+  endTime: string | null;
+  room: string | null;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+
+  section: {
+    id: string;
+    sectionCode: string;
+    name: string;
+    capacity?: number | string;
+    enrolledCount?: number | string;
+    isActive?: boolean;
+  };
+
+  courseOffering?: {
+    id: string;
+    code?: string;
+    title?: string;
+    credits?: number | string;
+
+    course?: {
+      id: string;
+      code: string;
+      title: string;
+      credits?: number | string;
+    };
+
+    semester?: {
+      id: string;
+      name: string;
+      code: string;
+      type?: string;
+      status?: string;
+      startDate?: string;
+      endDate?: string;
+    };
+  };
+
+  _count?: {
+    results?: number;
+  };
+}

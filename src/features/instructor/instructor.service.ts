@@ -1,6 +1,7 @@
 import { apiRequest } from "@/services";
 
 import type {
+  InstructorExam,
   InstructorProfile,
   InstructorSection,
   InstructorStudent,
@@ -24,5 +25,12 @@ export function getMyStudents(): Promise<InstructorStudent[]> {
   return apiRequest<InstructorStudent[]>({
     method: "GET",
     url: "/instructors/students",
+  });
+}
+
+export function getMyExams(): Promise<InstructorExam[]> {
+  return apiRequest<InstructorExam[]>({
+    method: "GET",
+    url: "/exams/my",
   });
 }

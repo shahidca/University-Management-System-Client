@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import {
+  getMyExams,
   getMyInstructorProfile,
   getMySections,
   getMyStudents,
@@ -17,6 +18,9 @@ export const instructorQueryKeys = {
 
   students: () =>
     [...instructorQueryKeys.all, "students"] as const,
+
+  exams: () =>
+  [...instructorQueryKeys.all, "exams"] as const,
 };
 
 export function useMyInstructorProfile() {
@@ -41,6 +45,15 @@ export function useMyStudents() {
   return useQuery({
     queryKey: instructorQueryKeys.students(),
     queryFn: getMyStudents,
+    staleTime: 60 * 1000,
+    retry: 1,
+  });
+}
+
+export function useMyExams() {
+  return useQuery({
+    queryKey: instructorQueryKeys.exams(),
+    queryFn: getMyExams,
     staleTime: 60 * 1000,
     retry: 1,
   });
