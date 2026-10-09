@@ -136,6 +136,7 @@ function ExamCard({
               <p className="text-xs text-muted-foreground">
                 Exam Date
               </p>
+
               <p className="mt-1 text-sm font-medium">
                 {formatDate(exam.examDate)}
               </p>
@@ -149,6 +150,7 @@ function ExamCard({
               <p className="text-xs text-muted-foreground">
                 Time
               </p>
+
               <p className="mt-1 text-sm font-medium">
                 {formatTime(exam.startTime) ??
                   "Not scheduled"}
@@ -167,8 +169,10 @@ function ExamCard({
               <p className="text-xs text-muted-foreground">
                 Section
               </p>
+
               <p className="mt-1 text-sm font-medium">
                 {exam.section.sectionCode}
+
                 {exam.section.name
                   ? ` • ${exam.section.name}`
                   : ""}
@@ -186,6 +190,7 @@ function ExamCard({
 
               <p className="mt-1 text-sm font-medium">
                 {exam.section.enrolledCount ?? 0}
+
                 {exam.section.capacity
                   ? ` / ${exam.section.capacity}`
                   : ""}
@@ -221,6 +226,16 @@ function ExamCard({
             )}
           </div>
         )}
+
+        {/* View Details */}
+        <div className="flex justify-end border-t border-border/60 px-5 py-3">
+          <Link
+            href={`/instructor/exams/${exam.id}`}
+            className="inline-flex items-center text-sm font-medium text-primary transition-colors hover:text-primary/80 hover:underline"
+          >
+            View Details
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );
@@ -250,6 +265,10 @@ function ExamSkeleton() {
               <Skeleton className="h-4 w-28" />
             </div>
           ))}
+        </div>
+
+        <div className="flex justify-end border-t border-border/60 pt-3">
+          <Skeleton className="h-4 w-24" />
         </div>
       </CardContent>
     </Card>
@@ -378,6 +397,7 @@ export default function InstructorExamsPage() {
                   <p className="text-sm text-muted-foreground">
                     Total Exams
                   </p>
+
                   <p className="text-2xl font-bold">
                     {exams.length}
                   </p>
@@ -397,6 +417,7 @@ export default function InstructorExamsPage() {
                   <p className="text-sm text-muted-foreground">
                     Published
                   </p>
+
                   <p className="text-2xl font-bold">
                     {publishedCount}
                   </p>
@@ -416,6 +437,7 @@ export default function InstructorExamsPage() {
                   <p className="text-sm text-muted-foreground">
                     Drafts
                   </p>
+
                   <p className="text-2xl font-bold">
                     {draftCount}
                   </p>
@@ -435,6 +457,7 @@ export default function InstructorExamsPage() {
                   <p className="text-sm text-muted-foreground">
                     Student Entries
                   </p>
+
                   <p className="text-2xl font-bold">
                     {totalStudents}
                   </p>
@@ -446,20 +469,22 @@ export default function InstructorExamsPage() {
       )}
 
       {/* Search */}
-      {!isLoading && !isError && exams.length > 0 && (
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      {!isLoading &&
+        !isError &&
+        exams.length > 0 && (
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
-          <Input
-            value={search}
-            onChange={(event) =>
-              setSearch(event.target.value)
-            }
-            placeholder="Search exams, courses, sections..."
-            className="pl-9"
-          />
-        </div>
-      )}
+            <Input
+              value={search}
+              onChange={(event) =>
+                setSearch(event.target.value)
+              }
+              placeholder="Search exams, courses, sections..."
+              className="pl-9"
+            />
+          </div>
+        )}
 
       {/* Error */}
       {isError && (

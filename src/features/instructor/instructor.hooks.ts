@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import {
+  getExamById,
   getMyExams,
   getMyInstructorProfile,
   getMySections,
@@ -54,6 +55,22 @@ export function useMyExams() {
   return useQuery({
     queryKey: instructorQueryKeys.exams(),
     queryFn: getMyExams,
+    staleTime: 60 * 1000,
+    retry: 1,
+  });
+}
+
+export function useInstructorExam(
+  examId: string,
+) {
+  return useQuery({
+    queryKey: [
+      ...instructorQueryKeys.all,
+      "exam",
+      examId,
+    ],
+    queryFn: () => getExamById(examId),
+    enabled: Boolean(examId),
     staleTime: 60 * 1000,
     retry: 1,
   });

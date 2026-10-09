@@ -34,3 +34,12 @@ export function getMyExams(): Promise<InstructorExam[]> {
     url: "/exams/my",
   });
 }
+
+export function getExamById(
+  examId: string,
+): Promise<InstructorExam> {
+  return apiRequest<InstructorExam>({
+    method: "GET",
+    url: `/exams/${examId}`,
+  });
+}
