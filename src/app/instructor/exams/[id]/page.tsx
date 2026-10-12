@@ -3,14 +3,18 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
+  AlertCircle,
   ArrowLeft,
   BookOpen,
   CalendarDays,
   CheckCircle2,
   Clock3,
+  Edit3,
   FileText,
+  Loader2,
   MapPin,
   RefreshCw,
+  Trash2,
   Users,
 } from "lucide-react";
 
@@ -24,7 +28,12 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useInstructorExam } from "@/features/instructor/instructor.hooks";
+import {
+  useDeleteInstructorExam,
+  useInstructorExam,
+  usePublishInstructorExam,
+  useUnpublishInstructorExam,
+} from "@/features/instructor/instructor.hooks";
 import type { InstructorExam } from "@/features/instructor/instructor.types";
 
 function formatDate(date: string) {
@@ -199,6 +208,83 @@ export default function InstructorExamDetailsPage() {
     refetch,
   } = useInstructorExam(examId);
 
+  const publishMutation =
+    usePublishInstructorExam(examId);
+
+  const unpublishMutation =
+    useUnpublishInstructorExam(examId);
+
+  const deleteMutation =
+    useDeleteInstructorExam(examId);
+
+  const isPublishing =
+    publishMutation.isPending ||
+    unpublishMutation.isPending;
+
+  const isDeleting =
+    deleteMutation.isPending;
+
+  const mutationError =
+    publishMutation.error ??
+    unpublishMutation.error ??
+    deleteMutation.error;
+
+  const mutationErrorMessage =
+    mutationError instanceof Error
+      ? mutationError.message
+      : "Unable to update the exam.";
+
+  const handlePublish = async () => {
+    if (!exam) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to publish this exam? Students will be able to see the published exam.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await publishMutation.mutateAsync();
+    } catch {
+      // Mutation error is displayed below.
+    }
+  };
+
+  const handleUnpublish = async () => {
+    if (!exam) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to unpublish this exam? Students will no longer see it as published.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await unpublishMutation.mutateAsync();
+    } catch {
+      // Mutation error is displayed below.
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!exam) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${exam.title}"? This action cannot be undone.`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteMutation.mutateAsync();
+
+      window.location.href =
+        "/instructor/exams";
+    } catch {
+      // Mutation error is displayed below.
+    }
+  };
+
   if (isLoading) {
     return <ExamDetailsSkeleton />;
   }
@@ -237,9 +323,7 @@ export default function InstructorExamDetailsPage() {
             >
               <RefreshCw
                 className={`size-4 ${
-                  isFetching
-                    ? "animate-spin"
-                    : ""
+                  isFetching ? "animate-spin" : ""
                 }`}
               />
               Try Again
@@ -287,7 +371,7 @@ export default function InstructorExamDetailsPage() {
       </div>
 
       {/* Header */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <Badge variant="secondary">
@@ -324,19 +408,93 @@ export default function InstructorExamDetailsPage() {
           </p>
         </div>
 
-        <Button
-          variant="outline"
-          onClick={() => void refetch()}
-          disabled={isFetching}
-        >
-          <RefreshCw
-            className={`size-4 ${
-              isFetching ? "animate-spin" : ""
-            }`}
-          />
-          Refresh
-        </Button>
+        {/* Header Actions */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href={`/instructor/exams/${exam.id}/edit`}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border bg-background px-3 text-sm font-medium transition-colors hover:bg-muted"
+          >
+            <Edit3 className="size-4" />
+            Edit Exam
+          </Link>
+
+          {exam.isPublished ? (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={
+                isPublishing || isDeleting
+              }
+              onClick={handleUnpublish}
+            >
+              {unpublishMutation.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <AlertCircle className="size-4" />
+              )}
+
+              {unpublishMutation.isPending
+                ? "Unpublishing..."
+                : "Unpublish"}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              disabled={
+                isPublishing || isDeleting
+              }
+              onClick={handlePublish}
+            >
+              {publishMutation.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="size-4" />
+              )}
+
+              {publishMutation.isPending
+                ? "Publishing..."
+                : "Publish Exam"}
+            </Button>
+          )}
+
+          <Button
+            type="button"
+            variant="outline"
+            disabled={
+              isFetching ||
+              isPublishing ||
+              isDeleting
+            }
+            onClick={() => void refetch()}
+          >
+            <RefreshCw
+              className={`size-4 ${
+                isFetching ? "animate-spin" : ""
+              }`}
+            />
+            Refresh
+          </Button>
+        </div>
       </div>
+
+      {/* Mutation Error */}
+      {mutationError ? (
+        <Card className="border-destructive/30 bg-destructive/5">
+          <CardContent className="flex items-start gap-3 p-4">
+            <AlertCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
+
+            <div>
+              <p className="font-medium text-destructive">
+                Unable to update exam
+              </p>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                {mutationErrorMessage}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
 
       {/* Exam Overview */}
       <Card className="overflow-hidden">
@@ -613,8 +771,8 @@ export default function InstructorExamDetailsPage() {
         </CardContent>
       </Card>
 
-      {/* Back */}
-      <div>
+      {/* Bottom Actions */}
+      <div className="flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/instructor/exams"
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -622,6 +780,74 @@ export default function InstructorExamDetailsPage() {
           <ArrowLeft className="size-4" />
           Back to My Exams
         </Link>
+
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/instructor/exams/${exam.id}/edit`}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border bg-background px-3 text-sm font-medium transition-colors hover:bg-muted"
+          >
+            <Edit3 className="size-4" />
+            Edit Exam
+          </Link>
+
+          {exam.isPublished ? (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={
+                isPublishing || isDeleting
+              }
+              onClick={handleUnpublish}
+            >
+              {unpublishMutation.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <AlertCircle className="size-4" />
+              )}
+
+              {unpublishMutation.isPending
+                ? "Unpublishing..."
+                : "Unpublish"}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              disabled={
+                isPublishing || isDeleting
+              }
+              onClick={handlePublish}
+            >
+              {publishMutation.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="size-4" />
+              )}
+
+              {publishMutation.isPending
+                ? "Publishing..."
+                : "Publish Exam"}
+            </Button>
+          )}
+
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={
+              isDeleting || isPublishing
+            }
+            onClick={handleDelete}
+          >
+            {isDeleting ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Trash2 className="size-4" />
+            )}
+
+            {isDeleting
+              ? "Deleting..."
+              : "Delete Exam"}
+          </Button>
+        </div>
       </div>
     </div>
   );

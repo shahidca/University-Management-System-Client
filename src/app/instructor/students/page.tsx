@@ -2,7 +2,7 @@
 
 import {
   AlertCircle,
-  ArrowLeft,
+  ArrowRight,
   Mail,
   Phone,
   RefreshCw,
@@ -54,8 +54,11 @@ export default function InstructorStudentsPage() {
   }, [students, search]);
 
   const totalStudents = students?.length ?? 0;
+
   const activeStudents =
-    students?.filter((student) => student.isActive !== false).length ?? 0;
+    students?.filter(
+      (student) => student.isActive !== false,
+    ).length ?? 0;
 
   return (
     <div className="space-y-6">
@@ -82,7 +85,8 @@ export default function InstructorStudentsPage() {
           </h1>
 
           <p className="text-sm text-muted-foreground sm:text-base">
-            View students enrolled in your assigned sections.
+            View and manage students enrolled in your
+            assigned sections.
           </p>
         </div>
 
@@ -148,7 +152,9 @@ export default function InstructorStudentsPage() {
           <input
             type="search"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) =>
+              setSearch(event.target.value)
+            }
             placeholder="Search by name, student ID, email, program..."
             className="h-10 w-full rounded-lg border bg-background pl-9 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
@@ -168,8 +174,8 @@ export default function InstructorStudentsPage() {
             </h2>
 
             <p className="mt-1 max-w-md text-sm text-muted-foreground">
-              Something went wrong while loading your students.
-              Please try again.
+              Something went wrong while loading your
+              students. Please try again.
             </p>
 
             <button
@@ -206,6 +212,8 @@ export default function InstructorStudentsPage() {
                 <div className="h-3 w-4/5 rounded bg-muted" />
                 <div className="h-3 w-3/5 rounded bg-muted" />
               </div>
+
+              <div className="mt-5 h-9 rounded-lg bg-muted" />
             </div>
           ))}
         </div>
@@ -227,8 +235,8 @@ export default function InstructorStudentsPage() {
               </h2>
 
               <p className="mt-1 max-w-md text-sm text-muted-foreground">
-                Students enrolled in your assigned sections will
-                appear here.
+                Students enrolled in your assigned sections
+                will appear here.
               </p>
             </div>
           </div>
@@ -251,8 +259,8 @@ export default function InstructorStudentsPage() {
               </h2>
 
               <p className="mt-1 text-sm text-muted-foreground">
-                Try searching with a different name, ID, email, or
-                program.
+                Try searching with a different name, ID,
+                email, or program.
               </p>
             </div>
           </div>
@@ -278,12 +286,13 @@ export default function InstructorStudentsPage() {
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {filteredStudents.map((student) => {
-                const fullName = `${student.firstName} ${student.lastName}`;
+                const fullName =
+                  `${student.firstName} ${student.lastName}`;
 
                 return (
                   <div
                     key={student.id}
-                    className="rounded-xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
+                    className="group rounded-xl border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                   >
                     {/* Student header */}
                     <div className="flex items-start gap-4">
@@ -325,6 +334,7 @@ export default function InstructorStudentsPage() {
                       {student.email && (
                         <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                           <Mail className="size-4 shrink-0" />
+
                           <span className="truncate">
                             {student.email}
                           </span>
@@ -334,13 +344,15 @@ export default function InstructorStudentsPage() {
                       {student.phone && (
                         <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                           <Phone className="size-4 shrink-0" />
+
                           <span>{student.phone}</span>
                         </div>
                       )}
                     </div>
 
                     {/* Academic information */}
-                    {(student.program || student.department) && (
+                    {(student.program ||
+                      student.department) && (
                       <div className="mt-5 border-t pt-4">
                         <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                           Academic Information
@@ -357,7 +369,8 @@ export default function InstructorStudentsPage() {
                                 {student.program.code
                                   ? `${student.program.code} — `
                                   : ""}
-                                {student.program.name ?? "N/A"}
+                                {student.program.name ??
+                                  "N/A"}
                               </span>
                             </div>
                           )}
@@ -384,13 +397,25 @@ export default function InstructorStudentsPage() {
                                 {student.department.code
                                   ? `${student.department.code} — `
                                   : ""}
-                                {student.department.name ?? "N/A"}
+                                {student.department.name ??
+                                  "N/A"}
                               </span>
                             </div>
                           )}
                         </div>
                       </div>
                     )}
+
+                    {/* View student */}
+                    <div className="mt-5 border-t pt-4">
+                      <Link
+                        href={`/instructor/students/${student.id}`}
+                        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                      >
+                        View Student
+                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                      </Link>
+                    </div>
                   </div>
                 );
               })}
